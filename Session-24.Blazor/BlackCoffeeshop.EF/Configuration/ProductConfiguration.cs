@@ -21,11 +21,12 @@ namespace BlackCoffeeshop.EF.Configuration {
             builder.Property(product => product.Code).HasMaxLength(10);
             builder.Property(product => product.Description).HasMaxLength(30);
             builder.Property(product => product.ProductCategoryID).HasMaxLength(10);
-            builder.Property(product => product.Price).HasMaxLength(10);
-            builder.Property(product => product.Cost).HasMaxLength(10);
+            builder.Property(product => product.Price).HasPrecision(7, 2);
+            builder.Property(product => product.Cost).HasPrecision(7, 2);
 
 
-            //builder.HasOne(product => product.Transaction).WithOne(transaction => transaction.Product).HasForeignKey<Transaction>(transaction => transaction.ID);
+            builder.HasMany(product => product.TransactionLines).WithOne(transactionLine => transactionLine.Product).HasForeignKey(transactionLine => transactionLine.ProductID);
+            builder.HasOne(product => product.ProductCategory).WithMany(productCategory => productCategory.Products).HasForeignKey(product => product.ProductCategoryID);
         }
     }
 }

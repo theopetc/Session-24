@@ -20,11 +20,15 @@ namespace BlackCoffeeshop.EF.Configuration
             builder.Property(transactionLine => transactionLine.ID).ValueGeneratedOnAdd();
             builder.Property(transactionLine => transactionLine.ProductID).HasMaxLength(30);
             builder.Property(transactionLine => transactionLine.Quantity).HasMaxLength(30);
-            builder.Property(transactionLine => transactionLine.Price).HasMaxLength(30);
-            builder.Property(transactionLine => transactionLine.Discount).HasMaxLength(30);
-            builder.Property(transactionLine => transactionLine.TotalPrice).HasMaxLength(30);
+            builder.Property(transactionLine => transactionLine.Price).HasPrecision(7, 2);            
+            builder.Property(transactionLine => transactionLine.Discount).HasPrecision(7, 2);
+            builder.Property(transactionLine => transactionLine.TotalPrice).HasPrecision(9, 2);
 
-            builder.HasOne(transactionLine => transactionLine.Transaction).WithMany(transaction => transaction.TransactionLines).HasForeignKey(transactionLine => transactionLine.TransactionID);
+            builder.HasOne(transactionLine => transactionLine.Transaction).WithMany(transaction => transaction.TransactionLines)
+                .HasForeignKey(transactionLine => transactionLine.TransactionID);
+
+            builder.HasOne(transactionLine => transactionLine.Product).WithMany(product => product.TransactionLines)
+                .HasForeignKey(transactionLine => transactionLine.ProductID);
         }
     }
 }

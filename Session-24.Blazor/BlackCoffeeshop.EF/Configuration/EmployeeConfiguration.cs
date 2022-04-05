@@ -21,11 +21,11 @@ namespace BlackCoffeeshop.EF.Configuration
 
             builder.Property(employee => employee.Name).HasMaxLength(10);
             builder.Property(employee => employee.Surname).HasMaxLength(30);
-            builder.Property(employee => employee.EmployeeType).HasMaxLength(30);
-            builder.Property(employee => employee.SalaryPerMonth).HasMaxLength(30);
+            builder.Property(employee => employee.EmployeeType).HasConversion(employeeType => employeeType.ToString(), employeeType => (EmployeeType)Enum.Parse(typeof(EmployeeType), employeeType)).HasMaxLength(15);
+            builder.Property(employee => employee.SalaryPerMonth).HasPrecision(7, 2);
 
 
-            builder.HasOne(employee => employee.Transaction).WithOne(transaction => transaction.Employee).HasForeignKey<Transaction>(transaction => transaction.ID);
+            builder.HasMany(employee => employee.Transactions).WithOne(transaction => transaction.Employee).HasForeignKey(transaction => transaction.EmployeeID);
         }
     }
 }

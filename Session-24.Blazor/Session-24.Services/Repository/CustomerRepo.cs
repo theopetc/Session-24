@@ -13,7 +13,6 @@ namespace CoffeeShop.EF.Repositories
             context = dbCOntext;
         }
 
-
         public async Task CreateAsync(Customer entity)
         {
             if (entity.ID != 0)
@@ -22,22 +21,7 @@ namespace CoffeeShop.EF.Repositories
             context.Customers.Add(entity);
             await context.SaveChangesAsync();
         }
-
-        public Task Create(Customer entity)
-        {
-            throw new NotImplementedException();
-        }
-
-        public async Task Delete(int id)
-        {
-            var foundCustomer = context.Customers.SingleOrDefault(customer => customer.ID == id);
-            if (foundCustomer is null)
-                return;
-
-            context.Customers.Remove(foundCustomer);
-            await context.SaveChangesAsync();
-        }
-
+      
         public async Task DeleteAsync(int id)
         {
             var foundCustomer = context.Customers.SingleOrDefault(customer => customer.ID == id);
@@ -47,44 +31,18 @@ namespace CoffeeShop.EF.Repositories
 
             context.Customers.Remove(foundCustomer);
             await context.SaveChangesAsync();
-        }
-
-        public List<Customer> GetAll()
-        {
-
-            return context.Customers.ToList();
-        }
+        }        
 
         public async Task<IEnumerable<Customer>> GetAllAsync()
         {
-            return  await context.Customers.ToListAsync();
+            return await context.Customers.ToListAsync();
         }
-
-        public Customer? GetById(int id)
-        {
-
-            return context.Customers.Where(customer => customer.ID == id).SingleOrDefault();
-        }
-
+        
         public async Task<Customer?> GetByIdAsync(int id)
         {
-            return await context.Customers.SingleOrDefaultAsync(prodCat => prodCat.ID == id);
+            return await context.Customers.SingleOrDefaultAsync(customer => customer.ID == id);
 
-        }
-
-        public async Task Update(int id, Customer entity)
-        {
-            using var context = new ApplicationContext();
-            var foundCustomer = context.Customers.SingleOrDefault(customer => customer.ID == id);
-            if (foundCustomer is null)
-                return;
-
-            foundCustomer.Code = entity.Code;
-            foundCustomer.Description = entity.Description;
-            foundCustomer.Transaction = entity.Transaction;
-
-            await context.SaveChangesAsync();
-        }
+        }      
 
         public async Task UpdateAsync(int id, Customer entity)
         {
@@ -94,7 +52,7 @@ namespace CoffeeShop.EF.Repositories
 
             foundCustomer.Code = entity.Code;
             foundCustomer.Description = entity.Description;
-            foundCustomer.Transaction = entity.Transaction;
+            foundCustomer.Transactions = entity.Transactions;
 
             await context.SaveChangesAsync();
         }

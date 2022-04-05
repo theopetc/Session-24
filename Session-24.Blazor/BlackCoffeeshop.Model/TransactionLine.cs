@@ -2,6 +2,7 @@
 namespace BlackCoffeeshop.Model;
 public class TransactionLine : BaseEntity {
     public int ProductID { get; set; }
+    public Product Product { get; set; }
     public int TransactionID { get; set; }
     public int Quantity { get; set; }
     public decimal Price { get; set; }

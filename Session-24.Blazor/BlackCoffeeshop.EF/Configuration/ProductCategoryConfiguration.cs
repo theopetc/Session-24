@@ -15,17 +15,18 @@ namespace BlackCoffeeshop.EF.Configuration
         public void Configure(EntityTypeBuilder<ProductCategory> builder)
         {
           
-                builder.ToTable("ProductCategories");
+            builder.ToTable("ProductCategories");
 
-                builder.HasKey(productcategory => productcategory.ID);
-                builder.Property(productcategory => productcategory.ID).ValueGeneratedOnAdd();
+            builder.HasKey(productcategory => productcategory.ID);
+            builder.Property(productcategory => productcategory.ID).ValueGeneratedOnAdd();
 
-                builder.Property(productcategory => productcategory.Code).HasMaxLength(10);
-                builder.Property(productcategory => productcategory.Description).HasMaxLength(30);
-            //builder.Property(productcategory => productcategory.ProductType).HasMaxLength(30);
+            builder.Property(productcategory => productcategory.Code).HasMaxLength(10);
+            builder.Property(productcategory => productcategory.Description).HasMaxLength(30);
+            builder.Property(productCategory => productCategory.ProductType).HasConversion(productType => productType.ToString(), productType => (ProductType)Enum.Parse(typeof(ProductType), productType)).HasMaxLength(15);
 
 
-            //builder.HasOne(productcategory => productcategory.Transaction).WithOne(transaction => transaction.ProductCategory).HasForeignKey<Transaction>(transaction => transaction.ID);
+
+            builder.HasMany(productCategory => productCategory.Products).WithOne(product => product.ProductCategory).HasForeignKey(product => product.ProductCategoryID);
             
         }
     }

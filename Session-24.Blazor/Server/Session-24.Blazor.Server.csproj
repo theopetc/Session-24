@@ -10,9 +10,15 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="6.0.2" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.3">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\BlackCoffeeshop.EF\BlackCoffeeshop.EF.csproj" />
+    <ProjectReference Include="..\BlackCoffeeshop.Model\BlackCoffeeshop.Model.csproj" />
     <ProjectReference Include="..\Client\Session-24.Blazor.Client.csproj" />
     <ProjectReference Include="..\Shared\Session-24.Blazor.Shared.csproj" />
   </ItemGroup>

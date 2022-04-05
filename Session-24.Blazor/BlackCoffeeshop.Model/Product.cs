@@ -7,7 +7,7 @@ public class Product : BaseEntity {
     public decimal Price { get; set; }
     public decimal Cost { get; set; }
     public ProductCategory ProductCategory { get; set; }
-
+    public List<TransactionLine> TransactionLines { get; set; }
     public Product() {
 
     }
