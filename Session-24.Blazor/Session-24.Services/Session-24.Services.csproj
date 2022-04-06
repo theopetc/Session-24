@@ -10,6 +10,7 @@
   <ItemGroup>
     <ProjectReference Include="..\BlackCoffeeshop.EF\BlackCoffeeshop.EF.csproj" />
     <ProjectReference Include="..\BlackCoffeeshop.Model\BlackCoffeeshop.Model.csproj" />
+    <ProjectReference Include="..\Shared\Session-24.Blazor.Shared.csproj" />
   </ItemGroup>
 
 </Project>

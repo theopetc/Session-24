@@ -2,6 +2,7 @@ using BlackCoffeeshop.EF.Configuration;
 using BlackCoffeeshop.EF.Context;
 using BlackCoffeeshop.EF.Repository;
 using BlackCoffeeshop.Model;
+using CoffeeShop.EF.Repositories;
 using Microsoft.AspNetCore.ResponseCompression;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -12,6 +13,7 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 builder.Services.AddDbContext<ApplicationContext>();
 builder.Services.AddScoped<IEntityRepo<ProductCategory>, ProductCategoryRepo>();
+builder.Services.AddScoped<IEntityRepo<Employee>, EmployeeRepo>();
 
 var app = builder.Build();
 

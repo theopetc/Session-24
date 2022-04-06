@@ -10,46 +10,46 @@ namespace Session_24.Services.Handlers
 {
     public class EmployeeHandler
     {
-        private readonly ApplicationContext _context;
+        private readonly List<Employee> _context;
 
-        public EmployeeHandler(ApplicationContext context)
+        public EmployeeHandler(List<Employee> context)
         {
             _context = context;
         }
 
-        public bool CheckAddAvailiability(Employee employee)
+        public bool CheckAddAvailiability(EmployeeType employee)
         {
-            switch (employee.EmployeeType)
+            switch (employee)
             {
                 case EmployeeType.Manager:
-                    return _context.Employees.Where(employee => employee.EmployeeType == EmployeeType.Manager).Count() < 1;
+                    return _context.Where(employee => employee.EmployeeType == EmployeeType.Manager).Count() < 1;
                 case EmployeeType.Cashier:
-                    return _context.Employees.Where(employee => employee.EmployeeType == EmployeeType.Cashier).Count() < 2;
+                    return _context.Where(employee => employee.EmployeeType == EmployeeType.Cashier).Count() < 2;
                 case EmployeeType.Barista:
-                    return _context.Employees.Where(employee => employee.EmployeeType == EmployeeType.Barista).Count() < 2;
+                    return _context.Where(employee => employee.EmployeeType == EmployeeType.Barista).Count() < 2;
                 default:
-                    return _context.Employees.Where(employee => employee.EmployeeType == EmployeeType.Waiter).Count() < 3;
+                    return _context.Where(employee => employee.EmployeeType == EmployeeType.Waiter).Count() < 3;
             }
         }
 
-        public bool CheckDeleteAvailiability(Employee employee)
+        public bool CheckDeleteAvailiability(EmployeeType employee)
         {
-            switch (employee.EmployeeType)
+            switch (employee)
             {
                 case EmployeeType.Manager:
                     return false;
                 case EmployeeType.Cashier:
-                    return _context.Employees.Where(employee => employee.EmployeeType == EmployeeType.Cashier).Count() > 1;
+                    return _context.Where(employee => employee.EmployeeType == EmployeeType.Cashier).Count() > 1;
                 case EmployeeType.Barista:
-                    return _context.Employees.Where(employee => employee.EmployeeType == EmployeeType.Barista).Count() > 1;
+                    return _context.Where(employee => employee.EmployeeType == EmployeeType.Barista).Count() > 1;
                 default:
-                    return _context.Employees.Where(employee => employee.EmployeeType == EmployeeType.Waiter).Count() > 1;
+                    return _context.Where(employee => employee.EmployeeType == EmployeeType.Waiter).Count() > 1;
             }
         }
 
-        public bool CheckUpdateAvailibility(Employee oldEmployee, Employee newEmployee)
+        public bool CheckUpdateAvailibility(EmployeeType oldEmployee, EmployeeType newEmployee)
         {
-            if (oldEmployee.EmployeeType == newEmployee.EmployeeType)
+            if (oldEmployee == newEmployee)
                 return true;
             return CheckAddAvailiability(newEmployee) && CheckDeleteAvailiability(oldEmployee);
         }
