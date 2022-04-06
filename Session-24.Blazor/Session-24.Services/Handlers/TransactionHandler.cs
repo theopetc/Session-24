@@ -20,7 +20,7 @@ namespace Session_24.Services.Handlers
 
         public decimal GetTotal(Transaction transaction)
         {
-            return transaction.TransactionLines.Sum(transactionLine => transactionLine.Price);
+            return transaction.TransactionLines.Sum(transactionLine => transactionLine.TotalPrice);
         }
 
         private bool CheckDiscountAvailibility(Transaction transaction)
