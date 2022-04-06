@@ -13,7 +13,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlackCoffeeshop.EF", "Black
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlackCoffeeshop.Model", "BlackCoffeeshop.Model\BlackCoffeeshop.Model.csproj", "{36A291D4-6195-4A5B-9C52-6677CC119FED}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Session-24.Services", "Session-24.Services\Session-24.Services.csproj", "{486D677F-6210-422B-A98E-85B432BCAD22}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Session-24.Services", "Session-24.Services\Session-24.Services.csproj", "{486D677F-6210-422B-A98E-85B432BCAD22}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

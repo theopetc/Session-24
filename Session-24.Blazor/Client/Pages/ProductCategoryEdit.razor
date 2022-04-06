@@ -1,0 +1,78 @@
+﻿@page "/ProductCategoryList/Edit/{ID:int?}"
+@using BlackCoffeeshop.Model
+@using Session_24.Blazor.Shared
+@inject HttpClient httpClient
+@inject NavigationManager navigationManager
+
+<h3>ProductCategoryEdit</h3>
+@if (productCatView == null)
+{
+    <p>Loading ...</p>
+}
+else
+{
+    <div class="row">
+        <div class="col-md-6">
+            <label class="form-label">Description</label>
+            <input class="form-control" @bind="@productCatView.Description"/>
+        </div>
+        <div class="col-md-6">
+            <label class="form-label">Code</label>
+            <input class="form-control" @bind="@productCatView.Code"/>
+        </div>
+
+        <div class="col-md-6">
+            <label class="form-label mt-2">Product Type</label>
+             <select class="form-select" @bind="@productCatView.ProductType">
+                @foreach (var type in Enum.GetValues(typeof(ProductType)))
+                {
+                    <option value="@type">@type</option>
+                }
+            </select>
+        </div>
+
+    </div>
+    <div class="row mt-2">
+        <div class="col">
+            <button class="btn btn-success" @onclick="OnSave">Save</button>
+            <button class="btn btn-danger" @onclick="OnCancel">Cancel</button>
+        </div>
+    </div>
+}
+
+
+@code {
+    [Parameter] public int? Id { get; set; }
+    ProductCategoryViewModel productCatView { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        productCatView = await httpClient.GetFromJsonAsync<ProductCategoryViewModel>($"ProductCategory/{(Id == null ? 0 : Id)}");
+    }
+
+    protected async Task OnSave()
+    {
+        HttpResponseMessage response;
+        if(!HasValidData())
+            return;
+            if (Id == null)
+            {
+                response = await httpClient.PostAsJsonAsync("ProductCategory", productCatView);
+            }
+            else
+            {
+                response = await httpClient.PutAsJsonAsync("ProductCategory", productCatView);
+            }
+        response.EnsureSuccessStatusCode();
+        navigationManager.NavigateTo("ProductCategoryList");
+    }
+    protected void OnCancel()
+    {
+        navigationManager.NavigateTo("ProductCategoryList");
+    }
+
+    protected bool HasValidData()
+    {
+        return !string.IsNullOrWhiteSpace(productCatView.Description) && !string.IsNullOrWhiteSpace(productCatView.Code); 
+    }
+}

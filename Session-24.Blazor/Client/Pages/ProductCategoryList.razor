@@ -1,0 +1,73 @@
+﻿@page "/ProductCategoryList"
+@using Session_24.Blazor.Shared
+@using System.Net.Http.Json
+@inject HttpClient httpClient
+@inject NavigationManager navigationManager
+
+<h3>Product Category List</h3>
+
+<button class="btn btn-primary" @onclick="AddNewCategory" >New Category</button>
+
+@if (isLoading)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Description</th>
+                <th>Product Type</th>
+                <th>Code</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var productCategory in productCategoryViewModel.ProductCategories)
+            {
+                <tr>
+                    <td>@productCategory.Description</td>
+                    <td>@productCategory.ProductType</td>
+                    <td>@productCategory.Code</td>
+                    <td>
+                        <button class="btn btn-primary" @onclick="() => EditCategory(productCategory)">Edit</button>
+                        <button class="btn btn-danger" @onclick="() => DeleteCategory(productCategory)">Delete</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+
+@code {
+    private ProductCategoryListViewModel productCategoryViewModel = new();
+    private bool isLoading = true;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadItemsFromServer();
+        isLoading = false;
+    }
+
+    async Task AddNewCategory()
+    {
+        navigationManager.NavigateTo("/ProductCategoryList/Edit");
+    }
+
+    async Task EditCategory(ProductCategoryViewModel productCatView)
+    {
+        navigationManager.NavigateTo($"/ProductCategoryList/Edit/{productCatView.ID}");
+    }
+    async Task DeleteCategory(ProductCategoryViewModel productCatView)
+    {
+        var response = await httpClient.DeleteAsync($"ProductCategory/{productCatView.ID}");
+        response.EnsureSuccessStatusCode();
+        await LoadItemsFromServer();
+    }
+    private async Task LoadItemsFromServer()
+    {
+        productCategoryViewModel.ProductCategories = await httpClient.GetFromJsonAsync<List<ProductCategoryViewModel>>("ProductCategory");
+    }
+}

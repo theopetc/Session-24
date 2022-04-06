@@ -20,6 +20,7 @@
     <ProjectReference Include="..\BlackCoffeeshop.EF\BlackCoffeeshop.EF.csproj" />
     <ProjectReference Include="..\BlackCoffeeshop.Model\BlackCoffeeshop.Model.csproj" />
     <ProjectReference Include="..\Client\Session-24.Blazor.Client.csproj" />
+    <ProjectReference Include="..\Session-24.Services\Session-24.Services.csproj" />
     <ProjectReference Include="..\Shared\Session-24.Blazor.Shared.csproj" />
   </ItemGroup>
 
