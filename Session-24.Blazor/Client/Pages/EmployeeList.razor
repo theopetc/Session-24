@@ -52,19 +52,19 @@ else
 		isLoading = false;
 	}
 
-	protected async Task AddNewEmployee()
+	async Task AddNewEmployee()
 	{
 		navigationManager.NavigateTo("/employeelist/edit");
 	}
 
-	protected async Task EditEmployee(EmployeeViewModel employeeViewModel)
+	async Task EditEmployee(EmployeeViewModel employeeViewModel)
 	{
 		navigationManager.NavigateTo($"/employeelist/edit/{employeeViewModel.ID}");
 	}
 
-	protected async Task DeleteEmployee(EmployeeViewModel employeeViewModel)
+	async Task DeleteEmployee(EmployeeViewModel employeeViewModel)
     {
-        var response = await httpClient.DeleteAsync($"employeelist/{employeeViewModel.ID}");
+        var response = await httpClient.DeleteAsync($"employee/{employeeViewModel.ID}");
         response.EnsureSuccessStatusCode();
         await LoadItemsFromServer();
     }
