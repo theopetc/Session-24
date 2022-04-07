@@ -1,8 +1,9 @@
-﻿using BlackCoffeeshop.EF.Repository;
+﻿
 using BlackCoffeeshop.Model;
 using Microsoft.AspNetCore.Mvc;
 using Session_24.Blazor.Shared;
 using Session_24.Services.Handlers;
+using Session_24.Services.Repository;
 
 namespace Session_24.Blazor.Server.Controllers
 {
@@ -26,7 +27,7 @@ namespace Session_24.Blazor.Server.Controllers
                 ID = x.ID,
                 Name = x.Name,
                 Surname = x.Surname,
-                EmployeeType = x.EmployeeType,
+                EmployeeType = (Shared.EmployeeType)x.EmployeeType,
                 SalaryPerMonth = x.SalaryPerMonth
             });
         }
@@ -42,7 +43,7 @@ namespace Session_24.Blazor.Server.Controllers
                 model.Name = existing.Name;
                 model.Surname = existing.Surname;
                 model.SalaryPerMonth = existing.SalaryPerMonth;
-                model.EmployeeType = existing.EmployeeType;
+                model.EmployeeType = (Shared.EmployeeType)existing.EmployeeType;
 
             }
             return model;
@@ -57,7 +58,7 @@ namespace Session_24.Blazor.Server.Controllers
                 Name= employeeViewModel.Name,
                 Surname= employeeViewModel.Surname,
                 SalaryPerMonth = employeeViewModel.SalaryPerMonth,
-                EmployeeType = employeeViewModel.EmployeeType
+                EmployeeType = (BlackCoffeeshop.Model.EmployeeType)employeeViewModel.EmployeeType
             };
             var employees = await _employeeRepo.GetAllAsync();
             var employeeHandler = new EmployeeHandler(employees.ToList());
@@ -76,7 +77,7 @@ namespace Session_24.Blazor.Server.Controllers
             itemToUpdate.Name = employeeViewModel.Name;
             itemToUpdate.Surname = employeeViewModel.Surname;
             itemToUpdate.SalaryPerMonth = employeeViewModel.SalaryPerMonth;
-            itemToUpdate.EmployeeType = employeeViewModel.EmployeeType;
+            itemToUpdate.EmployeeType = (BlackCoffeeshop.Model.EmployeeType)employeeViewModel.EmployeeType;
 
             var employees = await _employeeRepo.GetAllAsync();
             var employeeHandler = new EmployeeHandler(employees.ToList());

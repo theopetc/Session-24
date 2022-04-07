@@ -1,7 +1,6 @@
 using BlackCoffeeshop.EF.Configuration;
 using BlackCoffeeshop.EF.Context;
 using BlackCoffeeshop.Model;
-using CoffeeShop.EF.Repositories;
 using Microsoft.AspNetCore.ResponseCompression;
 using Session_24.Services.Handlers;
 using Session_24.Services.Repository;
