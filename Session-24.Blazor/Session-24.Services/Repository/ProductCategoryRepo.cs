@@ -1,9 +1,9 @@
 ﻿using BlackCoffeeshop.EF.Context;
-using BlackCoffeeshop.EF.Repository;
 using BlackCoffeeshop.Model;
 using Microsoft.EntityFrameworkCore;
 
-namespace BlackCoffeeshop.EF.Configuration {
+namespace Session_24.Services.Repository
+{
     public class ProductCategoryRepo : IEntityRepo<ProductCategory>
     {
         private readonly ApplicationContext context;

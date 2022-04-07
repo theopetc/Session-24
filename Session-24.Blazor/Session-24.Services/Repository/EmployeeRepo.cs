@@ -1,9 +1,9 @@
 ﻿using BlackCoffeeshop.EF.Context;
-using BlackCoffeeshop.EF.Repository;
 using BlackCoffeeshop.Model;
 using Microsoft.EntityFrameworkCore;
 
-namespace CoffeeShop.EF.Repositories {
+namespace Session_24.Services.Repository
+{
     public class EmployeeRepo : IEntityRepo<Employee>
     {
         private readonly ApplicationContext context;

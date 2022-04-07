@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BlackCoffeeshop.EF.Repository
+namespace Session_24.Services.Repository
 {
     public interface IEntityRepo<TEntity>
            where TEntity : BaseEntity {
