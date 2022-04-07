@@ -1,6 +1,7 @@
 using BlackCoffeeshop.EF.Configuration;
 using BlackCoffeeshop.EF.Context;
 using BlackCoffeeshop.Model;
+using CoffeeShop.EF.Repositories;
 using Microsoft.AspNetCore.ResponseCompression;
 using Session_24.Services.Handlers;
 using Session_24.Services.Repository;
@@ -15,6 +16,7 @@ builder.Services.AddDbContext<ApplicationContext>();
 builder.Services.AddScoped<IEntityRepo<ProductCategory>, ProductCategoryRepo>();
 builder.Services.AddScoped<IEntityRepo<MonthlyLedger>, MonthlyLedgerRepo>();
 builder.Services.AddScoped<MonthlyLedgerHandler>();
+builder.Services.AddScoped<IEntityRepo<Employee>, EmployeeRepo>();
 
 var app = builder.Build();
 
