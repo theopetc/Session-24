@@ -1,0 +1,84 @@
+﻿@page "/productList"
+@using Session_24.Blazor.Shared
+@using System.Net.Http.Json
+@using BlackCoffeeshop.Model
+@inject NavigationManager navigationManager
+@inject HttpClient httpClient
+
+<h3>Product List</h3>
+@if (isLoading)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <button class="btn btn-primary" @onclick="AddNewProduct">Add Product</button>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Description</th>
+                <th>Product Category</th>
+                <th>Code</th>
+                <th>Price</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var product in _productListViewModel.ProductViewModels)
+            {
+                var productCategory = product.ProductCategory;
+                <tr>
+                    <td>@product.Description</td>
+                    <td>@productCategory.Description</td>                                                                                             
+                    <td>@product.Code</td>
+                    <td>@product.Price</td>
+                    <td>
+                        <button class="btn btn-primary" @onclick="() => EditProduct(product)">Edit</button>
+                        <button class="btn btn-danger" @onclick="() => DeleteProduct(product)">Delete</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+@code {
+    private ProductListViewModel _productListViewModel  = new ProductListViewModel();
+    ProductCategory productCategory;
+    private bool isLoading = true;    
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadItemsFromServer();
+        isLoading = false;
+    }
+
+    async Task AddNewProduct()
+    {
+        navigationManager.NavigateTo("/productList/Edit");
+    }
+
+    async Task EditProduct(ProductViewModel productView)
+    {
+        ProductEditViewModel productEditViewModel = new(){
+            ID = productView.ID,
+            Code = productView.Code,
+            Description = productView.Description,
+            ProductCategoryID = productView.ProductCategoryID,
+            Price = productView.Price,
+            Cost = productView.Cost            
+
+        };
+        navigationManager.NavigateTo($"/productList/Edit/{productEditViewModel.ID}");
+    }
+    async Task DeleteProduct(ProductViewModel productView)
+    {        
+        var response = await httpClient.DeleteAsync($"product/{productView.ID}");
+        response.EnsureSuccessStatusCode();
+        await LoadItemsFromServer();
+    }
+    private async Task LoadItemsFromServer()
+    {
+        _productListViewModel.ProductViewModels = await httpClient.GetFromJsonAsync<List<ProductViewModel>>("Product");
+    }
+}

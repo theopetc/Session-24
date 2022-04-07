@@ -1,0 +1,88 @@
+﻿@page "/productList/edit/{id:int?}"
+@using BlackCoffeeshop.Model
+@using Session_24.Blazor.Shared
+@inject HttpClient httpClient
+@inject NavigationManager navigationManager
+<h3>ProductEdit</h3>
+@if (productEdit == null)
+{
+    <p>Loading ...</p>
+}
+else
+{
+    <div class="row">
+        <div class="col-md-6">
+            <label class="form-label">Description</label>
+            <input class="form-control" @bind="@productEdit.Description"/>
+        </div>
+        <div class="col-md-6">
+            <label class="form-label">Code</label>
+            <input class="form-control" @bind="@productEdit.Code"/>
+        </div>
+        @*<div class="col-md-6">
+            <label class="form-label">ProductCategoryID</label>
+            <input class="form-control" @bind="@productEdit.ProductCategoryID"/>
+        </div> *@    
+        
+        <div class="col-md-6">
+            <label class="form-label">Product Category</label>            
+            <select class=" form-select" aria-label="Default select example" @bind="@productEdit.ProductCategoryID">                
+                @foreach (var product in productEdit.ProductCategories)
+                {
+                    <option value="@product.ID"> @product.Description </option>
+                }
+            </select>            
+        </div>        
+
+        <div class="col-md-6">
+            <label class="form-label">Cost</label>
+            <input class="form-control" @bind="@productEdit.Cost"/>
+        </div>
+        <div class="col-md-6">
+            <label class="form-label">Price</label>
+            <input class="form-control" @bind="@productEdit.Price"/>
+        </div>        
+
+    </div>
+    <div class="row mt-2">
+        <div class="col">
+            <button class="btn btn-success" @onclick="OnSave">Save</button>
+            <button class="btn btn-danger" @onclick="OnCancel">Cancel</button>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter] public int? id { get; set; }    
+
+    ProductEditViewModel productEdit { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        productEdit = await httpClient.GetFromJsonAsync<ProductEditViewModel>($"Product/{(id == null ? 0 : id)}");               
+
+    }
+
+    protected async Task OnSave()
+    {
+        HttpResponseMessage response;
+        
+        if (id == null)
+        {
+            response = await httpClient.PostAsJsonAsync("Product", productEdit);
+        }
+        else
+        {
+            response = await httpClient.PutAsJsonAsync("Product", productEdit);
+        }
+
+        response.EnsureSuccessStatusCode();
+        navigationManager.NavigateTo("ProductList");
+    }
+
+    protected void OnCancel()
+    {
+        navigationManager.NavigateTo("ProductList");
+    }
+
+}

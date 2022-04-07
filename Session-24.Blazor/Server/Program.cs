@@ -12,6 +12,7 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 builder.Services.AddDbContext<ApplicationContext>();
 builder.Services.AddScoped<IEntityRepo<ProductCategory>, ProductCategoryRepo>();
+builder.Services.AddScoped<IEntityRepo<Product>, ProductRepo>();
 
 var app = builder.Build();
 
