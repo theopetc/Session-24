@@ -1,0 +1,74 @@
+﻿@page "/MonthlyLedgerList"
+@using Session_24.Blazor.Shared
+@inject HttpClient httpClient
+@inject NavigationManager navigationManager
+
+<h3>Monthly Ledgers List</h3>
+
+
+
+@if (isLoading)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <button class="btn btn-primary" @onclick="AddNewMonthlyLedger" >New Monthly Ledger</button>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Year</th>
+                <th>Month</th>
+                <th>Income</th>
+                <th>Expenses</th>
+                <th>Total</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var monthlyLedger in monthlyLedgerlistView.MonthlyLedgers)
+            {
+                <tr>
+                    <td>@monthlyLedger.Year</td>
+                    <td>@monthlyLedger.Month</td>
+                    <td>@monthlyLedger.Income</td>
+                    <td>@monthlyLedger.Expenses</td>
+                    <td>@monthlyLedger.Total</td>
+                    <td>
+                        <button class="btn btn-danger" @onclick="() => DeleteCategory(monthlyLedger)">Delete</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+}
+
+@code {
+    private MonthlyLedgerListViewModel monthlyLedgerlistView = new();
+    private bool isLoading = true;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadItemsFromServer();
+        isLoading = false;
+    }
+
+    async Task AddNewMonthlyLedger()
+    {
+        navigationManager.NavigateTo($"/MonthlyLedgerList/Create");
+    }
+
+    async Task DeleteCategory(MonthlyLedgerViewModel monthlyLedgerView)
+    {
+        var response = await httpClient.DeleteAsync($"MonthlyLedger/{monthlyLedgerView.ID}");
+        response.EnsureSuccessStatusCode();
+        await LoadItemsFromServer();
+    }
+
+    private async Task LoadItemsFromServer()
+    {
+        monthlyLedgerlistView.MonthlyLedgers = await httpClient.GetFromJsonAsync<List<MonthlyLedgerViewModel>>("MonthlyLedger");
+    }
+    
+}

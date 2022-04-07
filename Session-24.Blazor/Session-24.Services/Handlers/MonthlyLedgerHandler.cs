@@ -22,12 +22,16 @@ namespace Session_24.Services.Handlers
 
         public async Task<decimal> GetIncome(MonthlyLedger monthlyLedger)
         {
-            return await _context.Transactions.Where(transaction => transaction.Date.Year == monthlyLedger.Year && transaction.Date.Month == monthlyLedger.Month).SumAsync(transaction => transaction.TotalPrice);
+            int year = int.Parse(monthlyLedger.Year);
+            int month = int.Parse(monthlyLedger.Month);
+            return await _context.Transactions.Where(transaction => transaction.Date.Year == year && transaction.Date.Month == month).SumAsync(transaction => transaction.TotalPrice);
         }
 
         private async Task<decimal> GetProductExpences(MonthlyLedger monthlyLedger)
         {
-            return await _context.Transactions.Where(transaction => transaction.Date.Year == monthlyLedger.Year && transaction.Date.Month == monthlyLedger.Month).SumAsync(transaction => transaction.TotalCost);
+            int year = int.Parse(monthlyLedger.Year);
+            int month = int.Parse(monthlyLedger.Month);
+            return await _context.Transactions.Where(transaction => transaction.Date.Year == year && transaction.Date.Month == month).SumAsync(transaction => transaction.TotalCost);
             
         }
 
@@ -46,9 +50,9 @@ namespace Session_24.Services.Handlers
             return monthlyLedger.Income - monthlyLedger.Expenses;
         }
 
-        //public async Task<bool> MonthlyLedgerExists(MonthlyLedger monthlyLedger)
-        //{
-        //    return await _context.MonthlyLedgers.FirstOrDefaultAsync(monthlyL => monthlyL.Year == monthlyLedger.Year && monthlyL.Month == monthlyLedger.Month) is not null;
-        //}
+        public async Task<bool> MonthlyLedgerExists(MonthlyLedger monthlyLedger)
+        {
+            return await _context.MonthlyLedgers.FirstOrDefaultAsync(monthlyL => monthlyL.Year == monthlyLedger.Year && monthlyL.Month == monthlyLedger.Month) is not null;
+        }
     }
 }
