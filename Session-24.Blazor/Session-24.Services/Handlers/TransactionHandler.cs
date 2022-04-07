@@ -1,49 +1,57 @@
 ﻿using BlackCoffeeshop.EF.Context;
 using BlackCoffeeshop.Model;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Session_24.Blazor.Shared;
 
 namespace Session_24.Services.Handlers
 {
     public class TransactionHandler
     {
-        private readonly ApplicationContext _context;
+        //private readonly ProductTransctionListViewModel _productTransactionList;
+        private ApplicationContext _context;
 
-        public TransactionHandler(ApplicationContext context)
+
+        public TransactionHandler()
         {
-            _context = context;
+           
         }
 
-        public decimal GetTotal(Transaction transaction)
+        public decimal GetTotal(List<TransactionLineViewModel> transactionLines)
         {
-            return transaction.TransactionLines.Sum(transactionLine => transactionLine.TotalPrice);
+            return transactionLines.Sum(transactionLine => transactionLine.TotalPrice);
         }
 
-        private bool CheckDiscountAvailibility(Transaction transaction)
+        public decimal GetTotalCost(List<TransactionLineViewModel> transactionLines)
         {
-            return transaction.TransactionLines.Sum(transactionLine => transactionLine.Price) > 10;
+            return transactionLines.Sum(transactionLine => transactionLine.Cost);
         }
 
-        public void CalculateDiscount(Transaction transaction)
+        private bool CheckDiscountAvailibility(List<TransactionLineViewModel> transactionLines)
         {
-            if (CheckDiscountAvailibility(transaction))
+            return transactionLines.Sum(transactionLine => transactionLine.Price) > 10;
+        }
+
+        public void CalculateDiscount(List<TransactionLineViewModel> transactionLines)
+        {
+            if (CheckDiscountAvailibility(transactionLines))
             {
-                transaction.TransactionLines.Select(transactionLine => transactionLine.Discount = transactionLine.Price * 0.15m);
+                foreach (var transactionLine in transactionLines)
+                {
+                    transactionLine.Discount = transactionLine.Price * 0.15m;
+                }
             }
         }
 
-        public void CalculateTransactionLinesTotalPrice(Transaction transaction)
+        public void CalculateTransactionLinesTotalPrice(List<TransactionLineViewModel> transactionLines)
         {
-            transaction.TransactionLines.Select(transactionLine => transactionLine.TotalPrice = transactionLine.Price - transactionLine.Discount);
+            foreach(var transactionLine in transactionLines)
+            {
+                transactionLine.TotalPrice = transactionLine.Price - transactionLine.Discount;
+            }
         }
 
-        public void CalculateTransactionLinePrice(TransactionLine transactionLine)
+        public void  CalculateTransactionLinePrice(TransactionLineViewModel transactionLine, decimal productPrice )
         {
-            transactionLine.Price = _context.Products.SingleOrDefault(product => product.ID == transactionLine.ProductID).Price * transactionLine.Quantity;
+            transactionLine.Price = productPrice * transactionLine.Quantity;
         }
 
         public bool IsCreditCardRequired(Transaction transaction)

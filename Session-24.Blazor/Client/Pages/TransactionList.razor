@@ -1,0 +1,107 @@
+﻿@page "/transactionlist"
+@using Session_24.Blazor.Shared
+@using System.Net.Http.Json
+@inject HttpClient httpClient
+@inject NavigationManager navigationManager
+
+<h3>Transaction List</h3>
+
+<button class="btn btn-primary" @onclick="AddNewTransaction">New Transaction</button>
+
+@if (isLoading)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <div class="row">
+        <div class="row-md-6"> 
+        <select class="mt-2  form-select" aria-label="Default select example" @bind="@employeeID" >
+            <option value="-1">-- Active Employee --</option>  
+            @foreach (var employee in _transactionListViewModel.Emlpoyees)
+            {
+                <option value="@employee.ID"> @employee.Name </option>
+            }
+        </select>
+        </div>
+    </div>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Employee</th>
+                <th>Customer</th>
+                <th>Payment Method</th>
+                <th>Total Price</th>
+                <th>Total Cost</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var transactionViewModel in _transactionListViewModel.TransactionViewModels)
+            {
+                <tr>
+                    <td>@transactionViewModel.Date</td>
+                    <td>@transactionViewModel.EmployeeName</td>
+                    <td>@transactionViewModel.CustomerDescription</td>
+                    <td>@transactionViewModel.PaymentMethod</td>
+                    <td>@transactionViewModel.TotalPrice</td>
+                    <td>@transactionViewModel.TotalCost</td>
+                    <td>
+                        <button class="btn btn-primary" @onclick="() => TransactionDetails(transactionViewModel)">Details</button>
+                        <button class="btn btn-danger" @onclick="() => DeleteTransaction(transactionViewModel)">Delete</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private TransactionListViewModel _transactionListViewModel = new();
+    private bool isLoading = true;
+    public int employeeID { get; set; } = -1;
+    public EventCallback<int> ValueChanged { get; set; }
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadItemsFromServer();
+        isLoading = false;
+    }
+
+    async Task AddNewTransaction()
+    {
+        if(EmployeeSelected())
+            navigationManager.NavigateTo($"/transactionlist/edit/{employeeID}");
+    }
+
+    async Task TransactionDetails(TransactionViewModel transactionViewModel)
+    {
+        navigationManager.NavigateTo($"/transactionlist/details/{transactionViewModel.ID}");
+    }
+
+    async Task DeleteTransaction(TransactionViewModel transactionViewModel)
+    {
+        var response = await httpClient.DeleteAsync($"transaction/{transactionViewModel.ID}");
+        response.EnsureSuccessStatusCode();
+        await LoadItemsFromServer();
+    }
+
+    private async Task LoadItemsFromServer()
+    {
+        _transactionListViewModel = await httpClient.GetFromJsonAsync<TransactionListViewModel>("transaction");
+    }
+
+
+    private async Task OnChange(ChangeEventArgs e)
+    {
+        employeeID = int.Parse(e.Value.ToString());
+        await ValueChanged.InvokeAsync(employeeID);
+    }
+
+    private bool EmployeeSelected()
+    {
+        return (employeeID > -1);
+    }
+}

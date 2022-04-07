@@ -14,6 +14,11 @@ builder.Services.AddRazorPages();
 builder.Services.AddDbContext<ApplicationContext>();
 builder.Services.AddScoped<IEntityRepo<ProductCategory>, ProductCategoryRepo>();
 builder.Services.AddScoped<IEntityRepo<Employee>, EmployeeRepo>();
+builder.Services.AddScoped<IEntityRepo<Transaction>, TransactionRepo>();
+builder.Services.AddScoped<IEntityRepo<TransactionLine>, TransactionLineRepo>();
+builder.Services.AddScoped<IEntityRepo<Customer>, CustomerRepo>();
+builder.Services.AddScoped<IEntityRepo<Product>, ProductRepo>();
+
 
 var app = builder.Build();
 

@@ -1,0 +1,159 @@
+﻿@page "/transactionlist/edit/{Id:int}"
+@using BlackCoffeeshop.Model
+@using Session_24.Blazor.Shared
+@using Session_24.Services.Handlers
+
+@inject HttpClient httpClient
+@inject NavigationManager navigationManager
+
+<h3>New Transaction</h3>
+
+<div class="card-body">
+    <table class="table table-striped table-hover">
+        <thead>
+            <tr>
+                <th>Product</th>
+                <th>Quantity</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>
+                    <select class=" form-select" aria-label="Default select example" @bind="@tempTransactionLineView.ProductID">
+                        <option value="-1">-- Product --</option>
+                        @foreach (var product in productTransactionList.ProductViewModels)
+                        {
+                            <option value="@product.ID"> @product.Description - @product.Price€</option>
+                        }
+                    </select>
+                </td>
+                <td>
+                    <input class="form-control" type="number" min="1" step="1" @bind="tempTransactionLineView.Quantity">
+                </td>
+                <td>
+                    <button class="btn btn-primary" @onclick="AddTransactionLine"> ADD </button>
+                </td>
+
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<div class="card-body">
+    <table class="table table-striped table-hover">
+        <thead>
+            <tr>
+                <th>Product</th>
+                <th>Quantity</th>
+                <th>Price</th>
+                <th>Discount</th>
+                <th>Total Price</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var line in newTransactionLines)
+            {
+                <tr>
+                    <td>
+                        <label class="form-label">@line.ProductID </label>
+                    </td>
+                    <td>
+                        <label class="form-label">@line.Quantity </label>
+                    </td>
+                    <td>
+                        <label class="form-label">@line.Price </label>
+                    </td>
+                    <td>
+                        <label class="form-label">@line.Discount </label>
+                    </td>
+                    <td>
+                        <label class="form-label">@line.TotalPrice </label>
+                    </td>
+                    <td> <button class="btn btn-danger" @onclick="() => RemoveTransactionLine(line)">X</button></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<div class="row mt-2">
+    <div class="col">
+        <button class="btn btn-success" @onclick="OnSave">Save</button>
+        <button class="btn btn-danger" @onclick="OnCancel">Cancel</button>
+    </div>
+</div>
+
+
+
+@code {
+    [Parameter] public int Id { get; set; }
+    TransactionLineListViewModel transactionLinesView { get; set; } = new();
+    private TransactionLineViewModel tempTransactionLineView { get; set; } = new();
+    private ProductTransctionViewModel tempProductViewModel { get; set; } = new();
+    public ProductTransctionListViewModel productTransactionList { get; set; } = new();
+    private List<TransactionLineViewModel> newTransactionLines { get; set; } = new();
+    private TransactionHandler transactionHandler = new TransactionHandler();
+    public int productID { get; set; } = -1;
+
+    private bool hasDiscount = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+
+        productTransactionList = await httpClient.GetFromJsonAsync<ProductTransctionListViewModel>("/transactionline/products");
+    }
+
+    protected async Task OnSave()
+    {
+        HttpResponseMessage response;
+
+        response = await httpClient.PostAsJsonAsync("/transactionline",newTransactionLines);
+
+    }
+    protected void OnCancel()
+    {
+        navigationManager.NavigateTo("TransactionList");
+    }
+
+    protected bool HasValidData()
+    {
+        return true;
+    }
+
+    protected async void AddTransactionLine()
+    {
+        tempProductViewModel = await httpClient.GetFromJsonAsync<ProductTransctionViewModel>($"transactionline/product/{(tempTransactionLineView.ProductID == null ? 0 : tempTransactionLineView.ProductID)}");
+
+        var tempLine = new TransactionLineViewModel();
+        tempLine.ID = 0;
+        tempLine.ProductID = tempTransactionLineView.ProductID;
+        tempLine.Quantity = tempTransactionLineView.Quantity;
+        tempLine.Price = 0;
+        tempLine.Discount = 0;
+        tempLine.ProductDescription = string.Empty;
+        tempLine.TransactionID = 0;
+        tempLine.TotalPrice = 0;
+        tempLine.TotalCost = tempProductViewModel.Cost * tempTransactionLineView.Quantity;
+
+        transactionHandler.CalculateTransactionLinePrice(tempLine, tempProductViewModel.Price);
+        newTransactionLines.Add(tempLine);
+
+        UpdateDiscounts();
+
+
+    }
+
+    protected void RemoveTransactionLine(TransactionLineViewModel transactionline)
+    {
+        newTransactionLines.Remove(transactionline);
+        UpdateDiscounts();
+    }
+
+    private void UpdateDiscounts()
+    {
+        transactionHandler.CalculateDiscount(newTransactionLines);
+        transactionHandler.CalculateTransactionLinesTotalPrice(newTransactionLines);
+    }
+}

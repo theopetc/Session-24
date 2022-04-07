@@ -43,7 +43,7 @@ namespace BlackCoffeeshop.EF.Configuration {
        
         public async Task<Transaction?> GetByIdAsync(int id)
         {
-            return await context.Transactions.SingleOrDefaultAsync(transaction => transaction.ID == id);
+            return await context.Transactions.Include("TransactionLines").SingleOrDefaultAsync(transaction => transaction.ID == id);
         }
 
        

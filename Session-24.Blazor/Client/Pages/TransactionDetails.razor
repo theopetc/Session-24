@@ -1,0 +1,68 @@
+﻿@page "/transactionlist/details/{ID:int?}"
+
+@using Session_24.Blazor.Shared
+@using System.Net.Http.Json
+@inject HttpClient httpClient
+@inject NavigationManager navigationManager
+
+<h3>Transaction Details</h3>
+
+@if (isLoading)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Product</th>
+                <th>Quantity</th>
+                <th>Price</th>
+                <th>Discount</th>
+                <th>Total Price</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var transactionLine in _transactionLineListViewModel.TransactionLineViewModels)
+            {
+                <tr>
+                    <td>@transactionLine.ProductDescription</td>
+                    <td>@transactionLine.Quantity</td>
+                    <td>@transactionLine.Price</td>
+                    <td>@transactionLine.Discount</td>
+                    <td>@transactionLine.TotalPrice</td>
+                    <td>
+                        @* <button class="btn btn-primary" @onclick="() => EditTransaction(transactionViewModel)">Edit</button>*@
+                        @* <button class="btn btn-danger" @onclick="() => DeleteTransactionLine(transactionViewModel)">Delete</button>*@
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    [Parameter] public int? Id { get; set; }
+    private TransactionLineListViewModel _transactionLineListViewModel = new();
+    private bool isLoading = true;
+
+    protected override async Task OnInitializedAsync()
+    {   
+        await LoadItemsFromServer();
+        isLoading = false;
+    }
+
+
+    private async Task LoadItemsFromServer()
+    {
+        _transactionLineListViewModel.TransactionLineViewModels = await httpClient.GetFromJsonAsync<List<TransactionLineViewModel>>($"transactionline/lines/{(Id == null ? 0 : Id)}");
+    }
+
+    private async Task DeleteTransactionLine()
+    {
+        //DELETE
+    }
+
+}

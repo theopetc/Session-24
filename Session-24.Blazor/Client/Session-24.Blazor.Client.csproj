@@ -13,6 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Session-24.Services\Session-24.Services.csproj" />
     <ProjectReference Include="..\Shared\Session-24.Blazor.Shared.csproj" />
   </ItemGroup>
 
