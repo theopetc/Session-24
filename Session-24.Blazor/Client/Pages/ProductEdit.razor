@@ -19,12 +19,12 @@ else
             <label class="form-label">Code</label>
             <input class="form-control" @bind="@productEdit.Code"/>
         </div>
-        @*<div class="col-md-6">
+        <div class="col-md-6">
             <label class="form-label">ProductCategoryID</label>
             <input class="form-control" @bind="@productEdit.ProductCategoryID"/>
-        </div> *@    
+        </div>     
         
-        <div class="col-md-6">
+        @*<div class="col-md-6">
             <label class="form-label">Product Category</label>            
             <select class=" form-select" aria-label="Default select example" @bind="@productEdit.ProductCategoryID">                
                 @foreach (var product in productEdit.ProductCategories)
@@ -32,7 +32,7 @@ else
                     <option value="@product.ID"> @product.Description </option>
                 }
             </select>            
-        </div>        
+        </div> *@       
 
         <div class="col-md-6">
             <label class="form-label">Cost</label>
@@ -55,34 +55,56 @@ else
 @code {
     [Parameter] public int? id { get; set; }    
 
-    ProductEditViewModel productEdit { get; set; }
+    ProductViewModel productEdit { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
-        productEdit = await httpClient.GetFromJsonAsync<ProductEditViewModel>($"Product/{(id == null ? 0 : id)}");               
+        productEdit = await httpClient.GetFromJsonAsync<ProductViewModel>($"Product/{(id == null ? 0 : id)}");               
 
     }
 
     protected async Task OnSave()
     {
-        HttpResponseMessage response;
+        HttpResponseMessage response = new();        
         
         if (id == null)
         {
-            response = await httpClient.PostAsJsonAsync("Product", productEdit);
+            await OnAdd(response, productEdit);
+            
         }
         else
         {
-            response = await httpClient.PutAsJsonAsync("Product", productEdit);
+            var product = new ProductViewModel(){
+         
+                Description = productEdit.Description,
+                Code = productEdit.Code,
+                ProductCategoryID = productEdit.ProductCategoryID,
+                Cost = productEdit.Cost,
+                Price= productEdit.Price
+            };
+                                              
+            await OnDelete(response, productEdit.ID);
+            HttpResponseMessage response2 = new();
+            await OnAdd(response2, product);
         }
 
-        response.EnsureSuccessStatusCode();
-        navigationManager.NavigateTo("ProductList");
     }
 
     protected void OnCancel()
     {
         navigationManager.NavigateTo("ProductList");
+    }
+
+    protected async Task OnAdd(HttpResponseMessage response, ProductViewModel ProductEdit){
+        response = await httpClient.PostAsJsonAsync("Product", ProductEdit);
+        response.EnsureSuccessStatusCode();
+        navigationManager.NavigateTo("ProductList");
+    }
+
+    protected async Task OnDelete(HttpResponseMessage response, int ID){
+        response = await httpClient.DeleteAsync($"product/{ID}"); 
+        response.EnsureSuccessStatusCode();
+
     }
 
 }

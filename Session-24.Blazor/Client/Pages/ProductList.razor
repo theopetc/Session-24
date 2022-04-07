@@ -60,16 +60,19 @@ else
 
     async Task EditProduct(ProductViewModel productView)
     {
-        ProductEditViewModel productEditViewModel = new(){
-            ID = productView.ID,
-            Code = productView.Code,
-            Description = productView.Description,
-            ProductCategoryID = productView.ProductCategoryID,
-            Price = productView.Price,
-            Cost = productView.Cost            
+        //ProductEditViewModel productEditViewModel = new(){
+        //    ID = productView.ID,
+        //    Code = productView.Code,
+        //    Description = productView.Description,
+        //    ProductCategoryID = productView.ProductCategoryID,
+        //    Price = productView.Price,
+        //    Cost = productView.Cost,
+        //    ProductCategories = new()
+            
 
-        };
-        navigationManager.NavigateTo($"/productList/Edit/{productEditViewModel.ID}");
+        //};
+
+        navigationManager.NavigateTo($"/productList/Edit/{productView.ID}");
     }
     async Task DeleteProduct(ProductViewModel productView)
     {        

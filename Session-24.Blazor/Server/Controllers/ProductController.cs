@@ -1,7 +1,7 @@
-﻿using BlackCoffeeshop.EF.Repository;
-using BlackCoffeeshop.Model;
+﻿using BlackCoffeeshop.Model;
 using Microsoft.AspNetCore.Mvc;
 using Session_24.Blazor.Shared;
+using Session_24.Services.Repository;
 
 namespace Session_24.Blazor.Server.Controllers
 {
@@ -104,7 +104,7 @@ namespace Session_24.Blazor.Server.Controllers
         }
 
         [HttpPut]
-        public async Task<ActionResult> Put(ProductEditViewModel productView)
+        public async Task<ActionResult> Put(ProductViewModel productView)
         {
             var itemToUpdate = await _productRepo.GetByIdAsync(productView.ID);
             if (itemToUpdate == null) return NotFound();
