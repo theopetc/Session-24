@@ -14,8 +14,8 @@ namespace Session_24.Services.Repository
         
         public async Task CreateAsync(Product entity)
         {
-            if (entity.ID != 0)
-                throw new ArgumentException("Given entity should not have Id set", nameof(entity));
+            //if (entity.ID != 0)
+            //    throw new ArgumentException("Given entity should not have Id set", nameof(entity));
 
             context.Products.Add(entity);
 
@@ -23,11 +23,11 @@ namespace Session_24.Services.Repository
         }
         public async Task<Product?> GetByIdAsync(int id)
         {
-            return await context.Products.SingleOrDefaultAsync(prod => prod.ID == id);
+            return await context.Products.Include(prod => prod.ProductCategory).SingleOrDefaultAsync(prod => prod.ID == id);
         }
         public async Task<IEnumerable<Product>> GetAllAsync()
         {
-            return await context.Products.ToListAsync();
+            return await context.Products.Include(prod => prod.ProductCategory).ToListAsync();
         }
         public async Task DeleteAsync(int id)
         {
@@ -51,6 +51,7 @@ namespace Session_24.Services.Repository
             dbProd.Cost = entity.Cost;
             dbProd.Price = entity.Price;
             dbProd.ProductCategoryID = entity.ProductCategoryID;
+            
 
             await context.SaveChangesAsync();
         }
