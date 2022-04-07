@@ -1,5 +1,5 @@
-﻿using BlackCoffeeshop.EF.Repository;
-using BlackCoffeeshop.Model;
+﻿using Session_24.Services.Repository;
+    using BlackCoffeeshop.Model;
 using Microsoft.AspNetCore.Mvc;
 using Session_24.Blazor.Shared;
 
@@ -40,7 +40,7 @@ namespace Session_24.Blazor.Server.Controllers
                     ID = employee.ID,
                     Name = employee.FullName,
                     Surname = employee.Surname,
-                    EmployeeType = employee.EmployeeType,
+                    EmployeeType = (Shared.EmployeeType)employee.EmployeeType,
                     SalaryPerMonth = employee.SalaryPerMonth
                 });
             }
@@ -55,7 +55,7 @@ namespace Session_24.Blazor.Server.Controllers
                     Date = transaction.Date,
                     EmployeeName = EmployeeName,
                     CustomerDescription = CustomerCode,
-                    PaymentMethod = transaction.PaymentMethod,
+                    PaymentMethod = (Shared.PaymentMethod)transaction.PaymentMethod,
                     TotalPrice = transaction.TotalPrice,
                     TotalCost = transaction.TotalCost
 

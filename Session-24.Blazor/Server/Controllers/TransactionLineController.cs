@@ -1,4 +1,4 @@
-﻿using BlackCoffeeshop.EF.Repository;
+﻿using Session_24.Services.Repository;
 using BlackCoffeeshop.Model;
 using Microsoft.AspNetCore.Mvc;
 using Session_24.Blazor.Shared;
@@ -104,7 +104,7 @@ namespace Session_24.Blazor.Server.Controllers
                 TotalPrice = handler.GetTotal(transactionLines),
                 CustomerID = customer.Id,
                 Date = DateTime.Now,
-                PaymentMethod = PaymentMethod.Cash,
+                PaymentMethod = BlackCoffeeshop.Model.PaymentMethod.Cash,
                 TotalCost = handler.GetTotalCost(transactionLines),
                 EmployeeID = employeeID,
             };
