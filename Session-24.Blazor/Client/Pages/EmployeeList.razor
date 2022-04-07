@@ -1,0 +1,76 @@
+﻿@page "/employeelist"
+@using Session_24.Blazor.Shared
+@using System.Net.Http.Json
+@inject HttpClient httpClient
+@inject NavigationManager navigationManager
+
+<h3>Employee List</h3>
+
+<button class="btn btn-primary" @onclick="AddNewEmployee">New Employee</button>
+
+@if (isLoading)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Surname</th>
+                <th>Employee Type</th>
+                <th>Salary Per Month</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var employeeViewModel in _employeeListViewModel.EmployeeViewModels)
+            {
+                <tr>
+                    <td>@employeeViewModel.Name</td>
+                    <td>@employeeViewModel.Surname</td>
+                    <td>@employeeViewModel.EmployeeType</td>
+                    <td>@employeeViewModel.SalaryPerMonth</td>
+                    <td>
+                        <button class="btn btn-primary" @onclick="() => EditEmployee(employeeViewModel)">Edit</button>
+                        <button class="btn btn-danger" @onclick="() => DeleteEmployee(employeeViewModel)">Delete</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+	private EmployeeListViewModel _employeeListViewModel = new();
+	private bool isLoading = true;
+
+	protected override async Task OnInitializedAsync()
+	{
+		await LoadItemsFromServer();
+		isLoading = false;
+	}
+
+	async Task AddNewEmployee()
+	{
+		navigationManager.NavigateTo("/employeelist/edit");
+	}
+
+	async Task EditEmployee(EmployeeViewModel employeeViewModel)
+	{
+		navigationManager.NavigateTo($"/employeelist/edit/{employeeViewModel.ID}");
+	}
+
+	async Task DeleteEmployee(EmployeeViewModel employeeViewModel)
+    {
+        var response = await httpClient.DeleteAsync($"employee/{employeeViewModel.ID}");
+        response.EnsureSuccessStatusCode();
+        await LoadItemsFromServer();
+    }
+
+	private async Task LoadItemsFromServer()
+	{
+		_employeeListViewModel.EmployeeViewModels = await httpClient.GetFromJsonAsync<List<EmployeeViewModel>>("employee");
+	}
+}

@@ -1,0 +1,83 @@
+﻿@page "/employeeList/Edit/{ID:int?}"
+@using Session_24.Blazor.Shared
+@inject HttpClient httpClient
+@inject NavigationManager navigationManager
+
+<h3>Employee Edit</h3>
+
+@if (employeeViewModel == null)
+{
+    <p>Loading ...</p>
+}
+else
+{
+    <div class="row">
+        <div class="col-md-6">
+            <label class="form-label">Name</label>
+            <input class="form-control" @bind="@employeeViewModel.Name"/>
+        </div>
+        <div class="col-md-6">
+            <label class="form-label">Surname</label>
+            <input class="form-control" @bind="@employeeViewModel.Surname"/>
+        </div>
+        <div class="col-md-6">
+            <label class="form-label mt-2">Employee Type</label>
+            <select class="form-select" @bind="@employeeViewModel.EmployeeType">
+                @foreach (var type in Enum.GetValues(typeof(EmployeeType)))
+                {
+                    <option value="@type">@type</option>
+                }
+            </select>
+        </div>
+        <div class="col-md-6">
+            <label class="form-label">Salary Per Month</label>
+            <input type="number" class="form-control" @bind="@employeeViewModel.SalaryPerMonth"/>
+        </div>
+    </div>
+
+    <div class="row mt-2">
+        <div class="col">
+            <button class="btn btn-success" @onclick="OnSave">Save</button>
+            <button class="btn btn-danger" @onclick="OnCancel">Cancel</button>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter] public int? ID { get; set; }
+    EmployeeViewModel employeeViewModel { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        employeeViewModel = await httpClient.GetFromJsonAsync<EmployeeViewModel>($"employee/{(ID == null ? 0 : ID)}");
+    }
+
+    protected async Task OnSave()
+    {
+        HttpResponseMessage response;
+        if(!HasValidData())
+            return;
+            if (ID == null)
+            {
+                response = await httpClient.PostAsJsonAsync("employee", employeeViewModel);
+            }
+            else
+            {
+                response = await httpClient.PutAsJsonAsync("employee", employeeViewModel);
+            }
+        response.EnsureSuccessStatusCode();
+        navigationManager.NavigateTo("employeelist");
+    }
+
+    protected void OnCancel()
+    {
+        navigationManager.NavigateTo("employeelist");
+    }
+
+    protected bool HasValidData()
+    {
+        return (!string.IsNullOrWhiteSpace(employeeViewModel.Name) 
+            && !string.IsNullOrWhiteSpace(employeeViewModel.Surname)
+            && employeeViewModel.SalaryPerMonth >= 0); 
+    }
+}

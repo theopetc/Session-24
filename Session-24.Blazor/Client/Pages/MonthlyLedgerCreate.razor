@@ -1,0 +1,69 @@
+﻿@page "/MonthlyLedgerList/Create"
+@using Session_24.Blazor.Shared
+@inject HttpClient httpClient
+@inject NavigationManager navigationManager
+
+
+<h3>Monthly Ledger Create</h3>
+
+<div class="row">
+        <div class="col-md-6">
+            <label class="form-label">Year</label>
+            <input class="form-control" type="number" min="1999" max="2050" step="1" @bind="@monthlyLedgerView.Year"/>
+        </div>
+        <div class="col-md-6">
+            <label class="form-label">Month</label>
+            <select class="form-select" @bind="@monthlyLedgerView.Month" >
+                <option selected="selected" value="1">January</option>
+                <option value="2">February</option>
+                <option value="3">March</option>
+                <option value="4">April</option>
+                <option value="5">May</option>
+                <option value="6">June</option>
+                <option value="7">July</option>
+                <option value="8">August</option>
+                <option value="9">September</option>
+                <option value="10">October</option>
+                <option value="11">November</option>
+                <option value="12">December</option>
+            </select>
+        </div>
+
+    </div>
+    <div class="row mt-2">
+        <div class="col">
+            <button class="btn btn-success" @onclick="OnSave">Save</button>
+            <button class="btn btn-danger" @onclick="OnCancel">Cancel</button>
+        </div>
+    </div>
+
+@code {
+    private MonthlyLedgerViewModel monthlyLedgerView { get; set; }
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        monthlyLedgerView = new();
+    }
+
+    protected async Task OnSave()
+    {
+        HttpResponseMessage response;
+        if(!HasValidData())
+            return;
+        response = await httpClient.PostAsJsonAsync("MonthlyLedger", monthlyLedgerView);
+        response.EnsureSuccessStatusCode();
+        navigationManager.NavigateTo("MonthlyLedgerList");
+    }
+
+    protected void OnCancel()
+    {
+        navigationManager.NavigateTo("MonthlyLedgerList");
+    }
+
+    protected bool HasValidData()
+    {
+        return !string.IsNullOrWhiteSpace(monthlyLedgerView.Year) && !string.IsNullOrWhiteSpace(monthlyLedgerView.Month); 
+    }
+
+}

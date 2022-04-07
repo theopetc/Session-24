@@ -1,7 +1,8 @@
-﻿using BlackCoffeeshop.EF.Repository;
+﻿
 using BlackCoffeeshop.Model;
 using Microsoft.AspNetCore.Mvc;
 using Session_24.Blazor.Shared;
+using Session_24.Services.Repository;
 
 namespace Session_24.Blazor.Server.Controllers
 {
@@ -24,7 +25,7 @@ namespace Session_24.Blazor.Server.Controllers
             {
                 ID = x.ID,
                 Description = x.Description,
-                ProductType = x.ProductType,
+                ProductType = (Shared.ProductType)x.ProductType,
                 Code = x.Code
             });
         }
@@ -38,7 +39,7 @@ namespace Session_24.Blazor.Server.Controllers
                 var existing = await _productCatRepo.GetByIdAsync(id);
                 model.ID = existing.ID;
                 model.Description = existing.Description;
-                model.ProductType = existing.ProductType;
+                model.ProductType = (Shared.ProductType)existing.ProductType;
                 model.Code = existing.Code;
               
             }
@@ -59,7 +60,7 @@ namespace Session_24.Blazor.Server.Controllers
                 ID = productCatView.ID,
                 Description= productCatView.Description,
                 Code = productCatView.Code,
-                ProductType= productCatView.ProductType
+                ProductType= (BlackCoffeeshop.Model.ProductType)productCatView.ProductType
                 };
 
             await _productCatRepo.CreateAsync(newProductCat);
@@ -73,9 +74,26 @@ namespace Session_24.Blazor.Server.Controllers
 
             itemToUpdate.Description = productCatView.Description;
             itemToUpdate.Code = productCatView.Code;
-            itemToUpdate.ProductType = productCatView.ProductType;
+            itemToUpdate.ProductType = (BlackCoffeeshop.Model.ProductType)productCatView.ProductType;
             await _productCatRepo.UpdateAsync(productCatView.ID, itemToUpdate);
             return Ok();
         }
+
+        [HttpGet("[Action]/{id}")]
+        public async Task<ProductCategoryViewModel> GetViewModel(int id)
+        {
+            ProductCategoryViewModel model = new();
+            if (id != 0)
+            {
+                var existing = await _productCatRepo.GetByIdAsync(id);
+                model.ID = existing.ID;
+                model.Description = existing.Description;
+                model.ProductType = (Shared.ProductType)existing.ProductType;
+                model.Code = existing.Code;
+
+            }
+            return model;
+        }
     }
+
 }
